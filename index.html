@@ -1,0 +1,169 @@
+<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>تحدي البكالوريا</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,"Segoe UI",Tahoma,sans-serif;background:#1e1b4b;color:#fff;min-height:100vh;overflow-x:hidden}
+body::before,body::after{content:"";position:fixed;width:340px;height:340px;border-radius:50%;filter:blur(70px);opacity:.55;z-index:-1;animation:fl 12s ease-in-out infinite alternate}
+body::before{background:#7c3aed;top:-80px;right:-80px}body::after{background:#06b6d4;bottom:-80px;left:-80px;animation-delay:-6s}
+@keyframes fl{to{transform:translate(40px,60px) scale(1.25)}}
+@keyframes pop{from{opacity:0;transform:translateY(14px) scale(.98)}}
+@keyframes bn{50%{transform:translateY(-10px)}}
+.w{max-width:640px;margin:auto;padding:14px}
+.card{background:linear-gradient(160deg,#ffffff2b,#ffffff10);border:1px solid #ffffff3d;border-radius:22px;padding:18px;margin:12px 0;box-shadow:0 10px 30px #0005;animation:pop .35s ease}
+h1{text-align:center;font-size:30px;margin:10px 0;background:linear-gradient(90deg,#fde047,#fb923c,#f472b6);-webkit-background-clip:text;background-clip:text;color:transparent}
+button{font:inherit;cursor:pointer;border:0;border-radius:16px;padding:13px 16px;color:#fff;background:linear-gradient(135deg,#fb923c,#ef4444);font-weight:700;width:100%;margin-top:9px;box-shadow:0 5px 14px #0004;transition:transform .12s,filter .2s}
+button:active{transform:scale(.96)}button:hover{filter:brightness(1.1)}
+input,textarea{width:100%;padding:13px;border-radius:14px;border:2px solid #ffffff55;font:inherit;background:#ffffffee;color:#111;direction:ltr;text-align:left}
+.o{display:flex;gap:10px;align-items:center;background:#ffffff1f;border:1px solid #ffffff3a;text-align:left;direction:ltr;font-weight:500;box-shadow:none}
+.L{flex:none;width:30px;height:30px;border-radius:50%;background:#ffffff33;display:grid;place-items:center;font-weight:800}
+.o.sel{background:linear-gradient(90deg,#22c55e,#0d9488);border-color:#fff}.o.sel .L{background:#fff;color:#16a34a}
+.bar{display:flex;justify-content:space-between;align-items:center;font-weight:700;margin-top:6px}
+.pb{height:12px;background:#ffffff2e;border-radius:9px;overflow:hidden;margin-top:6px}.pb i{display:block;height:100%;background:linear-gradient(90deg,#facc15,#fb923c,#f472b6);border-radius:9px;transition:width .4s}
+.q{font-size:18px;direction:ltr;text-align:left;font-weight:700;line-height:1.5;margin-bottom:6px}
+.ans{background:#0006;border-radius:12px;padding:10px;margin-top:8px;direction:ltr;text-align:left;font-size:14px}
+.big{font-size:64px;text-align:center;animation:bn 1.6s ease-in-out infinite}small{opacity:.85}
+.sm{width:auto;margin:0;padding:8px 14px;background:linear-gradient(135deg,#8b5cf6,#6366f1)}
+.nav{display:flex;gap:8px}.nav button{flex:1}button:disabled{opacity:.35}
+.fl{background:#ffffff2e}.fl.on{background:linear-gradient(135deg,#f59e0b,#f97316)}
+.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.m{margin:0;padding:12px 0;background:#ffffff2e;width:auto;box-shadow:none}.m.a{background:#16a34a}.m.f{background:#f97316}.m.c{outline:3px solid #fff}
+.rc{background:#fff;color:#111;border-radius:14px;padding:12px 14px;margin:8px 0;direction:ltr;text-align:left;font-size:14px;line-height:1.55}.rc .qq{font-weight:700;font-size:15px}.rc .g{color:#15803d;font-weight:700}.rc .r{color:#b91c1c;font-weight:700}.rc .mo{background:#ecfdf5;border-left:4px solid #16a34a;padding:6px 8px;margin-top:6px}
+@media print{body::before,body::after,button{display:none!important}body{background:#fff}.rc{break-inside:avoid;border:1px solid #ccc}}
+</style></head><body><div class="w" id="app"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+const PHONE="201007243344";
+const DB="PASTE_FIREBASE_DB_URL_HERE";
+// [question, [options], correctIndex]
+const OLD=[
+["Which technology is primarily used to encrypt session data in TLS?",["Public-key cryptography","Symmetric cryptography","Digital signature","Digital certificate"],1],
+["The steps for establishing a secure connection and agreeing on shared secrets are called:",["TLS handshake","Symmetric cryptography","Digital signature","Digital certificate"],0],
+["Using two or more factors from different categories to verify identity is called:",["Multi-factor authentication (MFA)","Public-key encryption","TLS handshake","Symmetric cryptography"],0],
+["Which is an example of the Biometric factor?",["Text password","Fingerprint or facial recognition","ATM card","SMS verification code"],1],
+["Which is NOT a correct two-factor authentication because both factors are knowledge?",["Password + OTP sent to phone","Password + fingerprint","Password + a second secret password","Password + authenticator app code"],2],
+["Which technology detects tampering and impersonation and supports non-repudiation?",["Digital signature","Public-key cryptography","TLS handshake","Cloud computing"],0],
+["HTTP transmitted over a secure TLS connection is known as:",["FTP","HTTPS","SMTP","DNS"],1],
+["Which helps the browser verify the server's identity and the domain match?",["Digital certificate","Symmetric cryptography","Digital signature","Two-factor authentication"],0],
+["A system that allows or denies communication based on rules set in advance is a:",["VPN","DMZ","Firewall","Antivirus"],2],
+["What is the most appropriate reason for a DMZ?",["To improve communication speed","To expose all servers to the outside","To prevent damage to the internal network even if a public-facing server is attacked","To automatically remove viruses"],2],
+["Which is NOT an appropriate use of a VPN?",["Connecting safely from home to the organization's network","Connecting offices in different locations safely","Automatically deleting files infected with viruses","Encrypting communication on public Wi-Fi"],2],
+["Which best describes the Zero Trust concept?",["Access from inside the network is safe","A firewall alone is sufficient","No communication is trusted and is always verified","Only outside access needs monitoring"],2],
+["Defense in depth is the concept of:",["Relying on one strong firewall","Layering multiple security measures","Trusting all internal devices","Encrypting only public Wi-Fi traffic"],1],
+["Installing antivirus software and updating the OS belongs to which defense layer?",["Network entry point","Communication path","Server placement","Endpoints (peripheral devices)"],3],
+["The traditional boundary that assumes inside is safe and outside is a threat is called:",["DMZ","Security perimeter","Edge computing","Zero Trust"],1],
+["A VPN is:",["A system that monitors traffic using rules","A technology that creates an encrypted virtual private line over the Internet","An area for public servers","A virus-removal tool"],1],
+["A situation in which actual damage occurs due to an information security problem is a:",["Risk assessment","Security incident","Lesson learned","Threat containment"],1],
+["Which is NOT an example of a security incident?",["Data encrypted by ransomware","Customer data leaked","A software update performed to add new features","Web service down due to an attack"],2],
+["Which stage limits the spread of damage and isolates the affected part?",["Preparation","Containment","Recovery","Eradication"],1],
+["Which stage restores systems to normal, e.g. from a clean backup?",["Preparation","Containment","Recovery","Detection"],2],
+["Risk size is determined by:",["Impact + Likelihood","Impact × Likelihood","Impact only","Likelihood only"],1],
+["Which risks should be addressed first in the Risk Matrix?",["Low impact, low likelihood","Medium impact, medium likelihood","High impact, high likelihood","Low impact, high likelihood"],2],
+["The final stage of the six stages of incident response is:",["Recovery","Eradication","Detection","Prevention of recurrence"],3],
+["Removing the cause of the incident, such as deleting malware, is:",["Containment","Eradication","Preparation","Recovery"],1],
+["In web applications, the client is:",["The server that processes requests","The program or device that sends requests","The database","The communication protocol"],1],
+["When sending login information, it is preferable to use:",["GET","POST","200","404"],1],
+["The protocol that adds SSL/TLS encryption to HTTP is:",["HTTPS","API","JSON","GET"],0],
+["Status code 404 means:",["Successful request","Internal server error","Page/resource not found","Secure connection"],2],
+["Status code 500 means:",["Request processed successfully","Page not found","A problem occurred on the server side","Unauthorized request"],2],
+["An API is:",["A technology for adjusting page appearance","A system for exchanging data between different pieces of software","A technology for encrypting data","An HTTP method"],1],
+["An advantage of JSON is that it is:",["Easy for humans to read and computers to process","Used to encrypt data","Used to design interfaces","A status code"],0],
+["Displaying search results uses which HTTP method?",["POST","GET","500","HTTPS"],1],
+["Which technology defines the structure (skeleton) of a web page?",["CSS","JavaScript","HTML","SQL"],2],
+["Which technology specifies the appearance (colors, layout, fonts)?",["CSS","HTML","JavaScript","API"],0],
+["Which technology adds behavior and interactivity?",["HTML","CSS","JavaScript","SQL"],2],
+["Which is NOT an HTML semantic element?",["<header>","<e-mail>","<main>","<footer>"],1],
+["Responsive design means:",["Improving server speed","Automatically adjusting the layout to different screen sizes","Using JS for interaction","Making pages work only on computers"],1],
+["Mobile-first means:",["Designing first for computers","Designing first for small screens such as smartphones","Using JavaScript for interactivity","Improving server speed"],1],
+["Next.js is a framework built on:",["Vue","React","HTML","CSS"],1],
+["The main benefit of using a framework is:",["Developers don't need to write all code from scratch","It replaces HTML","It encrypts the page","It improves the database"],0]];
+// essays: [question, model answer, keywords]
+const OLD_E=[
+["Explain the roles of public-key and symmetric cryptography in the TLS handshake.","Public-key cryptography is used during the TLS handshake to authenticate the server and securely exchange a shared secret. Symmetric cryptography then encrypts the session data quickly and efficiently.",["handshake","public","symmetric","session"]],
+["Explain how two-factor authentication (2FA) reduces risk.","2FA requires two factors from different categories (knowledge + possession). A leaked password alone is not enough because the attacker also needs the physical second device.",["two","different","knowledge","possession"]],
+["Compare a digital certificate and a digital signature.","A digital certificate binds a public key to an entity's identity (domain validation). A digital signature guarantees the integrity and origin of data, detects tampering and provides non-repudiation.",["certificate","identity","signature","integrity","repudiation"]],
+["Explain defense in depth and name its four layers with a measure for each.","Defense in depth layers multiple security measures so if one fails the next protects. Layers: network entry - firewall; communication path - VPN; server placement - DMZ; endpoints - antivirus.",["layer","firewall","vpn","dmz","endpoint"]],
+["What is a DMZ and how does it protect the internal network?","A DMZ is a zone where servers exposed to the outside are placed separately from the internal network. If a public server is attacked, the damage does not reach the internal network.",["public","separate","internal","attack"]],
+["Compare traditional security with the Zero Trust approach.","Traditional security trusts everything inside the perimeter. Zero Trust does not automatically trust any user or device, even inside the network, and verifies every access request.",["trust","inside","verif","every"]],
+["List the six stages of incident response in order.","Preparation, Detection, Containment, Eradication, Recovery, Prevention of recurrence.",["preparation","detection","containment","eradication","recovery","prevention"]],
+["Why must Containment come before Eradication? Why is Impact × Likelihood used?","Containment stops the spread first, otherwise malware keeps infecting other systems while it is removed. Risk size = Impact × Likelihood, so high impact and high likelihood risks are handled first.",["spread","malware","impact","likelihood","first"]],
+["Explain the difference between GET and POST and why login needs HTTPS.","GET retrieves data (display a page, search results). POST sends data in the request body (login, forms). HTTPS encrypts with SSL/TLS so passwords cannot be intercepted.",["get","retriev","post","send","encrypt"]],
+["Explain the roles of HTML, CSS and JavaScript, and why semantic HTML is important.","HTML defines the structure, CSS specifies the appearance, JavaScript adds behavior and interactivity. Semantic HTML (e.g. <nav>, <main>) improves SEO and accessibility for screen readers.",["structure","appearance","behavior","semantic","seo"]]];
+
+const C1=[
+["Which option lists the stages of IT development in the correct chronological order?",["Rise of smartphones → Commercialization of the Internet","Commercialization of the Internet → Birth of the computer","Birth of the computer → Commercialization of the Internet → Rise of smartphones → Spread of cloud computing","Birth of the computer → Rise of smartphones → Spread of cloud computing → Commercialization of the Internet"],2],
+["What is the name of the observation that the number of transistors on an integrated circuit doubles approximately every two years?",["Cloud computing","Moore's Law","Edge computing","Quantum superposition"],1],
+["Which technology processes data directly on the device instead of sending it to the cloud, to reduce delays in decision-making?",["Cloud computing","Quantum computing","Edge computing","Social networking services"],2],
+["Which is NOT an appropriate description of an emerging technology?",["Autonomous driving uses AI to drive a vehicle without human operation","AR adds digital information to real-world images","VR is a technology that dramatically improves the processing speed of a computer","Quantum computing is expected to speed up computations that are difficult for traditional computers"],2],
+["Which term describes the broad field of computer systems capable of tasks such as learning, prediction, and speech and image recognition?",["Deep Learning","Artificial Intelligence","Machine Learning","Generative AI"],1],
+["What is Machine Learning in the hierarchy of AI technologies?",["A branch of AI in which models learn patterns from data","A style that relies on unconnected neural networks","A system for generating images only without training data","A set of strictly programmed and fixed rules"],0],
+["Which Machine Learning style relies on multi-layer neural networks to learn complex patterns?",["Machine Learning","Generative AI","Deep Learning","Spam filter"],2],
+["What is the primary function of Generative AI systems?",["Programming explicit rules for old computers","Creating new content such as text, images, audio, and software","Classifying spam emails only","Operating integrated circuits according to Moore's Law"],1],
+["Which of the following does NOT belong to \"what requires caution when using AI\"?",["Ethical judgments","Finding and classifying patterns","Judgments involving personal information or privacy","Final decision-making"],1],
+["In which industry is AI used to diagnose diseases from X-ray images?",["Agriculture","Manufacturing","Healthcare","Logistics"],2],
+["In manufacturing, what is the term for the system that predicts product failures in advance?",["Recommendation system","Voice assistant","Face recognition","Predictive maintenance"],3],
+["What does the term \"algorithmic bias\" represent in AI systems?",["Biases in AI outputs can lead to unfair or harmful results","A technology that explains why AI reached a judgment","Proper protection of personal data","Identifying who is responsible for the system"],0],
+["What is \"training data\" in AI systems?",["Improving AI computing speed","The examples from which an AI system learns patterns prior to use","Creating AI for creative work","Avoiding unfair discrimination"],1],
+["Which is one of the privacy issues associated with AI?",["Improving microprocessor efficiency","Creating AI for creative work","Identifying and tracking individuals using facial recognition technology","Increasing computing speed"],2]];
+const C1E=[
+["What is meant by Moore's Law? Is it a fixed physical law? Explain.","Moore's Law is the observation that transistor density on a chip doubles approximately every two years. It is not a fixed law: it faces physical limits such as leakage current and quantum tunneling. Solutions include parallel processing and quantum computing.",["transistor","two years","leakage","tunnel"]],
+["Explain the relationship among AI, Machine Learning, Deep Learning and Generative AI.","They are nested: AI is the broad field; Machine Learning is a subset of AI where models learn patterns from data; Deep Learning is a subset of ML using multi-layer neural networks; Generative AI is an application that relies on deep learning to create new content.",["subset","machine learning","deep learning","generative","content"]],
+["Explain how Edge Computing helps autonomous driving.","Edge computing processes data instantly on the vehicle (the device) itself instead of sending it to the cloud, eliminating transmission delay so decisions are immediate and safe.",["device","cloud","delay","decision"]],
+["What is algorithmic bias in AI and what causes it?","Algorithmic bias means systematic and repeatable errors in AI that create unfair outcomes for one group. It comes from unrepresentative or flawed training data, biased system design, and human biases; e.g. facial recognition failing on certain skin tones.",["bias","unfair","training data","represent"]]];
+const C3E=["Explain the benefit of responsive design and of using frameworks, and name two frameworks.","Responsive design automatically adapts the layout to PC, tablet and mobile screens. Frameworks provide ready-made functions and components so developers do not write everything from scratch. Examples: React (reusable components, efficient UI updates) and Next.js (built on React, adds routing and page rendering).",["responsive","screen","framework","scratch","react"]];
+const pk=(a,l)=>l.map(i=>a[i]);
+const M=[...C1,...pk(OLD,[0,2,5,7,9,11,12,15,17,18,19,21,22]),...pk(OLD,[25,26,27,28,29,32,34,35,36,37,38,39,33])];
+const E=[...C1E,...pk(OLD_E,[3,6,2]),...pk(OLD_E,[8,9]),C3E];
+const sh=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+const $=id=>document.getElementById(id),A=$('app');
+let name,Q,mA,eA,fl,c,sid,t0;
+function home(){A.innerHTML=`<h1>🎓 تحدي البكالوريا 🚀</h1><div class="card"><div class="big">🛡️🌐</div><p style="text-align:center">Chapter 1 + 2 + 3: تكنولوجيا المعلومات والذكاء الاصطناعي + الأمن السيبراني + تطبيقات الويب<br>٤٠ سؤال اختيار 🎯 + ١٠ أسئلة مقالية ✍️<br>تقدر تروح لأي سؤال، ترجع، وتعلّم 🚩 على اللي هترجعله</p><input id="nm" placeholder="Student name / اسم الطالب"><button onclick="start()">يلا نبدأ! 🎮</button></div>`}
+function start(){name=$('nm').value.trim();if(!name){$('nm').focus();return}
+Q=sh(M).map(q=>{const t=q[1][q[2]],o=sh(q[1]);return[q[0],o,o.indexOf(t),M.indexOf(q)]});mA=Array(40).fill(null);eA=Array(10).fill('');fl=new Set();c=0;sid=Date.now().toString(36)+Math.random().toString(36).slice(2,6);t0=Date.now();render()}
+const ans=n=>n<40?mA[n]!==null:eA[n-40].trim()!=='';
+const cnt=()=>[...Array(50).keys()].filter(ans).length;
+function push(done){if(!DB.startsWith('http')||!Q)return;const rec={name,sid,ts:Date.now(),done:!!done,n:cnt(),cur:c<40?Q[c][0]:E[c-40][0],mcq:Q.map((q,n)=>({q:q[0],a:mA[n]==null?'(no answer)':q[1][mA[n]],ok:mA[n]==q[2],c:q[1][q[2]]})),essay:eA.map((a,n)=>({q:E[n][0],a}))};fetch(DB.replace(/\/$/,'')+'/live/'+sid+'.json',{method:'PUT',body:JSON.stringify(rec)}).catch(()=>{})}
+function hud(){const d=cnt();return`<div class="bar"><span>✅ ${d}/50</span><span>🚩 ${fl.size}</span><button class="sm" onclick="showMap()">🗺️ الخريطة</button></div><div class="pb"><i style="width:${d*2}%"></i></div>`}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function render(){push();let b;
+if(c<40){const q=Q[c];b=`<div class="q">${c+1}. ${esc(q[0])}</div>`+q[1].map((o,k)=>`<button class="o ${mA[c]===k?'sel':''}" onclick="pick(${k})"><span class="L">${'ABCD'[k]}</span><span>${esc(o)}</span></button>`).join('')}
+else{const q=E[c-40];b=`<div class="q">Essay ${c-39}/10. ${esc(q[0])}</div><br><textarea rows="7" placeholder="Write your answer in English..." oninput="eA[c-40]=this.value">${esc(eA[c-40])}</textarea>`}
+A.innerHTML=hud()+`<div class="card">${b}</div><button class="fl ${fl.has(c)?'on':''}" onclick="flag()">${fl.has(c)?'🚩 شيل العلامة':'🏳️ علّم للرجوع له'}</button><div class="nav"><button onclick="go(c-1)" ${c==0?'disabled':''}>⬅️ Previous</button>`+(c<49?`<button onclick="go(c+1)">Next ➡️</button>`:`<button onclick="showMap()">🏁 إنهاء</button>`)+`</div>`;window.scrollTo(0,0)}
+function pick(k){mA[c]=mA[c]===k?null:k;render()}
+function flag(){fl.has(c)?fl.delete(c):fl.add(c);render()}
+function go(n){if(n<0||n>49)return;c=n;render()}
+function showMap(){push();const u=50-cnt();let g='';for(let n=0;n<50;n++)g+=`<button class="m ${ans(n)?'a':''} ${fl.has(n)?'f':''} ${n==c?'c':''}" onclick="go(${n})">${n+1}${fl.has(n)?'🚩':''}</button>`;
+A.innerHTML=`<h1>🗺️ خريطة الأسئلة</h1><div class="card"><div class="grid">${g}</div><p><small>🟩 تمت الإجابة • 🟧 معلّم 🚩 • ⬜ لسه • ١-٤٠ اختيار، ٤١-٥٠ مقالي</small></p><p>باقي <b>${u}</b> سؤال من غير إجابة • معلّم: <b>${fl.size}</b></p></div><button onclick="go(c)">↩️ رجوع للامتحان</button><button style="background:#16a34a" onclick="finish()">🏁 إنهاء الامتحان وإرسال النتيجة</button>`;window.scrollTo(0,0)}
+function sc(k,a){const t=a.toLowerCase();return +(k.filter(w=>t.includes(w)).length/k.length).toFixed(2)}
+function calc(){let m=0;Q.forEach((q,n)=>{if(mA[n]==q[2])m++});let e=0;E.forEach((q,n)=>e+=sc(q[2],eA[n]||''));return[m,+e.toFixed(1)]}
+function finish(force){const u=50-cnt();
+if(u&&force!==true){A.innerHTML=`<h1>⚠️ استنى!</h1><div class="card"><p style="text-align:center;font-size:18px">فاضل <b>${u}</b> سؤال من غير إجابة.<br>متأكد إنك عايز تنهي؟</p></div><button onclick="showMap()">↩️ لا، أرجع للخريطة</button><button style="background:#16a34a" onclick="finish(true)">أيوه، أنهي وشوف التصحيح 🏁</button>`;return}
+try{push(true);const[m,e]=calc(),mins=Math.round((Date.now()-t0)/60000),L=k=>k==null?'-':'ABCD'[k];
+const H=`📝 Bac Exam Result (Ch 1-2-3)\n👤 ${name}\n🎯 MCQ: ${m}/40\n✍️ Essay (keyword-auto): ${e}/10\n🏆 Total: ${(m+e).toFixed(1)}/50  ⏱️ ${mins} min\n\n`;
+let t=H+`--- MCQ ---\n`,f=t;
+Q.forEach((q,n)=>{const k=mA[n],r=k==q[2]?'✅':'❌';t+=`${n+1}. ${q[0].slice(0,28)}.. → ${L(k)} ${r}\n`;f+=`${n+1}. ${q[0]}\n   => ${k==null?'(no answer)':L(k)+') '+q[1][k]} ${r}\n`});
+t+=`\n--- Essay ---\n`;f+=`\n--- Essay ---\n`;
+E.forEach((q,n)=>{t+=`E${n+1}: ${(eA[n]||'(blank)').slice(0,200)}\n`;f+=`E${n+1}. ${q[0]}\nA: ${eA[n]||'(blank)'}\n`});
+window._t=t;window._full=f;window._pdf=null;result(m,e,mins)}catch(x){alert('Error: '+x.message)}}
+function result(m,e,mins){let h=`<h1>📊 النتيجة: ${(m+e).toFixed(1)}/50</h1><div class="rc" style="direction:rtl;text-align:center;font-size:16px">🎓 تقرير امتحان البكالوريا (Chapter 1+2+3)<br>👤 <b>${esc(name)}</b><br>MCQ: <b>${m}/40</b> • مقالي: <b>${e}/10</b> • ⏱️ ${mins} دقيقة</div>
+<button style="background:linear-gradient(135deg,#16a34a,#0d9488)" onclick="send()">📲 ابعت النتيجة لميس أسماء على واتساب</button>
+<button onclick="dl(this)">📥 تحميل التقرير PDF (أسئلة + إجاباتك + التصحيح)</button>
+<button class="sm" style="width:100%;margin-top:9px" onclick="shr(this)">📤 مشاركة ملف الـ PDF (واتساب أو غيره)</button>
+<button class="sm" style="width:100%;margin-top:9px" onclick="copyR(this)">📋 نسخ التقرير كنص</button><div id="rep">`;
+Q.forEach((q,n)=>{const k=mA[n],ok=k==q[2];h+=`<div class="rc"><div class="qq">${n+1}. ${esc(q[0])}</div>Your answer: <span class="${ok?'g':'r'}">${k==null?'(no answer)':'ABCD'[k]+') '+esc(q[1][k])} ${ok?'✅':'❌'}</span>${ok?'':`<div class="mo">✔ Correct: <b>${'ABCD'[q[2]]}) ${esc(q[1][q[2]])}</b></div>`}</div>`});
+E.forEach((q,n)=>{const s=sc(q[2],eA[n]||'');h+=`<div class="rc"><div class="qq">✍️ Essay ${n+1}. ${esc(q[0])}</div>Your answer: ${esc(eA[n]||'(blank)')}<br>Auto score: <b>${s}/1</b> (keywords: ${q[2].join(', ')})<div class="mo">✔ Model answer: ${esc(q[1])}</div></div>`});
+A.innerHTML=h+`</div><button onclick="home()">امتحان جديد 🔄</button>`;window.scrollTo(0,0)}
+function copyR(b){try{navigator.clipboard.writeText(window._full).then(()=>b.textContent='✅ تم النسخ',()=>b.textContent='❌ النسخ مش متاح')}catch(x){b.textContent='❌ النسخ مش متاح'}}
+function send(){window.location.href=`https://wa.me/${PHONE}?text=${encodeURIComponent(window._t)}`}
+async function mk(){if(window._pdf)return window._pdf;const p=new jspdf.jsPDF('p','mm','a4'),W=210,PH=297,g=8;let y=g;
+for(const el of document.querySelectorAll('#rep .rc,.rc')){}
+const els=[...document.querySelectorAll('.rc')];
+for(const el of els){const cv=await html2canvas(el,{scale:1.3,backgroundColor:'#ffffff'}),w=W-2*g,h=cv.height*w/cv.width;if(y+h>PH-g&&y>g){p.addPage();y=g}p.addImage(cv.toDataURL('image/jpeg',.85),'JPEG',g,y,w,h);y+=h+3}
+return window._pdf=p}
+async function dl(b){if(!window.html2canvas||!window.jspdf){window.print();return}
+const o=b.textContent;b.textContent='⏳ بجهز الـ PDF...';try{const p=await mk();p.save('Bac-Exam-'+name+'.pdf');b.textContent='✅ تم التحميل'}catch(x){b.textContent=o;window.print()}}
+async function shr(b){if(!window.html2canvas||!window.jspdf){window.print();return}
+const o=b.textContent;b.textContent='⏳ بجهز الملف...';try{const p=await mk(),f=new File([p.output('blob')],'Bac-Exam-'+name+'.pdf',{type:'application/pdf'});
+if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],title:'Bac Exam Report'});b.textContent='✅ تمت المشاركة'}else{p.save('Bac-Exam-'+name+'.pdf');b.textContent='✅ اتحمل (المشاركة مش مدعومة هنا)'}}catch(x){b.textContent=o}}
+home();
+</script></body></html>
